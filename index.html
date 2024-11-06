@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cari Tahu Siapa Nenek Moyang Anda</title>
+    <style>
+                /* Styling untuk gambar bulat di bagian atas */
+                .top-image {
+            width: 100px; /* Sesuaikan ukuran gambar */
+            height: 100px; /* Sesuaikan ukuran gambar */
+            border-radius: 50%; /* Membuat gambar berbentuk bulat */
+            object-fit: cover; /* Agar gambar terisi penuh di dalam lingkaran */
+            display: block;
+            margin: 20px auto; /* Pusatkan gambar dan beri jarak dari atas */
+            border: 2px solid #ccc; /* Border untuk mempercantik */
+        }
+
+        /* Styling kontainer utama */
+        .container {
+            text-align: center;
+            margin-top: 20px;
+        }
+                .donation-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: red; /* Warna latar belakang tombol */
+            color: rgb(0, 0, 0); /* Warna teks tombol */
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px; /* Sudut tombol melengkung */
+            font-size: 16px;
+            transition: background-color 0.3s ease; /* Efek transisi pada hover */
+        }
+
+        /* Gaya tombol saat dihover */
+        .donation-button:hover {
+            background-color: rgb(255, 0, 0); /* Warna tombol saat dihover */
+        }
+        /* Gaya dasar untuk tampilan gelap */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000000; /* Hitam */
+            color: #ff0000; /* Putih */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+            overflow: hidden; /* Mencegah scroll saat confetti */
+        }
+
+        /* Kontainer utama untuk tata letak yang rapi */
+        .container {
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            background-color: #ffffff; /* Abu-abu gelap */
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        h1 {
+            color: #ff0000; /* Aksen hijau mint */
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin: 10px 0;
+            border: 1px solid #444;
+            border-radius: 6px;
+            background-color: #333333; /* Abu-abu gelap */
+            color: #f5f5f5;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #ff0000; /* Aksen hijau mint */
+            color: #000000; /* Hitam */
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #ff0000; /* Warna hijau mint lebih gelap saat hover */
+        }
+
+        #loading {
+            display: none;
+            font-size: 18px;
+            color: #000000; /* Aksen hijau mint */
+            margin-top: 15px;
+        }
+
+        #result {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        img {
+            width: 150px;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+
+        .ancestor-info {
+            margin-top: 10px;
+            font-style: italic;
+            color: #000000;
+        }
+
+        /* Gaya untuk rarity */
+        .rarity {
+            font-weight: bold;
+            font-size: 18px;
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        .rarity-high {
+            color: #00f5d4; /* Aksen hijau mint */
+            background-color: #1a1a1a; /* Abu-abu gelap */
+            border: 1px solid #00f5d4; /* Aksen hijau mint */
+        }
+        .rarity-medium {
+            color: #ffbb33; /* Kuning */
+            background-color: #1a1a1a; /* Abu-abu gelap */
+            border: 1px solid #ffbb33; /* Kuning */
+        }
+        .rarity-low {
+            color: #cccccc; /* Abu-abu */
+            background-color: #1a1a1a; /* Abu-abu gelap */
+            border: 1px solid #444; /* Abu-abu lebih gelap */
+        }
+
+        /* Gaya untuk daftar nenek moyang langka */
+        .rare-ancestors {
+            margin-top:  20px;
+            text-align: left;
+            color: #000000;
+        }
+
+        .ancestor-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .ancestor-item img {
+            width: 40px; /* Ukuran gambar kecil untuk daftar */
+            height: auto;
+            margin-right: 10px;
+            border-radius: 4px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
+</head>
+<body>
+    <img src="ridzverse.png" alt="Gambar Bulat" class="top-image">
+    <div class="container">
+        <h1>Cari Tahu Siapa Nenek Moyang Kamu</h1>
+        
+        <!-- Bagian input untuk mencari nenek moyang -->
+        <p>Masukin Nama Kamu:</p>
+        <input type="text" id="name" placeholder="Nama Kamu">
+        <button onclick="cariNenekMoyang()">Cari Tahu</button>
+
+        <!-- Tampilan loading -->
+        <div id="loading">Sedang mencari nenek moyang Anda...</div>
+
+        <!-- Hasil akan ditampilkan di sini -->
+        <div id="result"></div>
+
+        <!-- Daftar nenek moyang langka -->
+        <div class="rare-ancestors">
+            <h2>Nenek Moyang Paling Langka</h2>
+            <div class="ancestor-item">
+                <img src="windah_habattusauda.png" alt="Windah Habattusauda">
+                <span>1. Windah Habattusauda - Rarity: Very High (2%)</span>
+            </div>
+            <div class="ancestor-item">
+                <img src="radenwatkins.png" alt="Raden Watkins">
+                <span>2. Raden Watkins - Rarity: Medium (30%)</span>
+            </div>
+            <div class="ancestor-item">
+                <img src="nona_gem.png" alt="Nona Gem">
+                <span>3. Nona Gem - Rarity: Medium (30%)</span>
+            </div>
+        </div>
+
+        <div class="donation-buttons">
+            <a href="https://saweria.co/ridzverse" target="_blank" class="donation-button">Dukung atmin via saweria</a>
+            <a href="https://bio.link/ridzverse" target="_blank" class="donation-button">Follow Ridzverse</a>
+        </div>
+
+        <!-- Audio untuk Windah dan Nona Gem -->
+        <audio id="windah-audio" src="windah.mp3"></audio>
+        <audio id="nona-gem-audio" src="nona_gem.mp3"></audio>
+    </div>
+
+    <script>
+        // Fungsi untuk membuat animasi confetti
+        function createConfetti() {
+            const count = 200,
+                defaults = {
+                    origin: { y: 0.7 },
+                };
+
+            function fire(particleRatio, opts) {
+                confetti(
+                    Object.assign({}, defaults, opts, {
+                        particleCount: Math.floor(count * particleRatio),
+                    })
+                );
+            }
+
+            fire(0.25, {
+                spread: 26,
+                startVelocity: 55,
+            });
+
+            fire(0.2, {
+                spread: 60,
+            });
+
+            fire(0.35, {
+                spread: 100,
+                decay: 0.91,
+                scalar: 0.8,
+            });
+
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 25,
+                decay: 0.92,
+                scalar: 1.2,
+            });
+
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 45,
+            });
+        }
+
+        function playAudio(audioId) {
+            const windahAudio = document.getElementById("windah-audio");
+            const nonaGemAudio = document.getElementById("nona-gem-audio");
+            // Hentikan audio yang sedang diputar
+            windahAudio.pause();
+            windahAudio.currentTime = 0;
+            nonaGemAudio.pause();
+            nonaGemAudio.currentTime = 0;
+
+            // Mainkan audio sesuai dengan ancestor
+            if (audioId === "windah") {
+                windahAudio.play();
+            } else if (audioId === "nona_gem") {
+                nonaGemAudio.play();
+            }
+        }
+
+        function cariNenekMoyang() {
+            const name = document.getElementById("name").value;
+            if (!name) {
+                alert("Silakan masukkan nama Anda!");
+                return;
+            }
+
+            // Tampilkan loading dan sembunyikan hasil sementara
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("result").style.display = "none";
+
+            // Daftar nenek moyang beserta tingkat rarity dan persentasenya
+            const ancestors = [
+                { 
+                    name: "Nona Gem", 
+                    image: "nona_gem.png", 
+                    info: "Nona Gem adalah seorang penyair yang memberi kefahaman dengan buku dan lagu jazz-nya yang berjudul 'Faham'.",
+                    rarity: "Medium",
+                    rarityPercentage: "30%"
+                },
+                { 
+                    name: "Raden Watkins", 
+                    image: "radenwatkins.png", 
+                    info: "Raden Watkins adalah orang Amerika yang menjelajah Asia Tenggara, dan pernah singgah di Jawa hingga diberi gelar 'Raden'.",
+                    rarity: "Medium",
+                    rarityPercentage: "30%"
+                },
+                { 
+                    name: "Inoen Geronimo", 
+                    image: "inoen.png", 
+                    info: "Inoen Geronimo adalah seorang dari suku Apache yang bisa bertahan hidup di alam dengan kemampuan mendeteksi racun dengan mengendus makanan sebelum disantap.",
+                    rarity: "Low",
+                    rarityPercentage: "20%"
+                },
+                { 
+                    name: "Antonio", 
+                    image: "antonio.png", 
+                    info: "Antonio adalah seorang pesepakbola profesional dari Manchester United pada tahun 80an, rival dari pemain Chelsea, Mudrykov.",
+                    rarity: "Low",
+                    rarityPercentage: "20%"
+                },
+                { 
+                    name: "Donny Pollo", 
+                    image: "donnypollo.png", 
+                    info: "Donny Pollo adalah musisi jazz yang dijuluki 'King Jazz of Ohio' karena lantunan jazz-nya pada tahun 1950.",
+                    rarity: "Low",
+                    rarityPercentage: "20%"
+                },
+                { 
+                    name: "Chef Murside", 
+                    image: "chef_monsieur.png", 
+                    info: "Chef Murside adalah seorang chef terkenal dari restoran Prancis, Geustaus, dengan makanan penemuannya 'Balon de Crevette' atau Balon Udang.",
+                    rarity: "Low",
+                    rarityPercentage: "20%"
+                },
+                { 
+                    name: "Mudrykov", 
+                    image: "mudrykov.png", 
+                    info: "Mudrykov adalah seorang pesepak bola paling ahli dari Chelsea di tahun 80an, rival dari Antonio di Manchester United.",
+                    rarity: "Low",
+                    rarityPercentage: "20%"
+                },
+                { 
+                    name: "Sir Vincent", 
+                    image: "sir_vincent.png", 
+                    info: "Sir Vincent adalah seorang negosiator handal dengan kepribadian gandanya di era penjajahan Belanda.",
+                    rarity: "Low",
+                    rarityPercentage: "20%"
+                },
+                { 
+                    name: "Windah Habattusauda", 
+                    image: "windah_habattusauda.png", 
+                    info: "Windah Habatussauda adalah seorang pelayan restoran yang berubah menjadi musisi jazz dengan lagu hits-nya 'Aoer Oeran' pada tahun 1950 dan keturunan bangsawan Meksiko.",
+                    rarity: "Very High",
+                    rarityPercentage: "2%"
+                }
+            ];
+
+            // Simulasi waktu loading selama 5 detik
+            setTimeout(() => {
+                // Pilih nenek moyang secara acak dengan penyesuaian untuk rarity
+                let randomAncestor;
+                const randomIndex = Math.random();
+                if (randomIndex < 0.02) { // 2% kemungkinan untuk Windah
+                    randomAncestor = ancestors[2]; // Windah
+                } else if (randomIndex < 0.32) { // 30% kemungkinan untuk Raden Watkins dan Nona Gem
+                    randomAncestor = ancestors[Math.floor(Math.random() * 2)]; // Raden Watkins atau Nona Gem
+                } else {
+                    randomAncestor = ancestors[Math.floor(Math.random() * (ancestors.length - 3)) + 3]; // Ancestor biasa
+                }
+
+                // Tampilkan hasil
+                const resultDiv = document.getElementById("result");
+                resultDiv.innerHTML = `
+                    <h2>Nenek Moyang Kamu:</h2>
+                    <h3>${randomAncestor.name}</h3>
+                    <img src="${randomAncestor.image}" alt="${randomAncestor.name}">
+                    <p class="ancestor-info">${randomAncestor.info}</p>
+                    <div class="rarity rarity-${randomAncestor.rarity.toLowerCase().replace(' ', '-')}" >Rarity: ${randomAncestor.rarity} (${randomAncestor.rarityPercentage})</div>
+                `;
+                document.getElementById("loading").style.display = "none";
+                resultDiv.style.display = "block";
+
+                // Putar audio dan confetti jika ancestor yang didapat adalah Windah, Nona Gem, atau Raden Watkins
+                if (randomAncestor.name === "Windah Habattusauda") {
+                    playAudio("windah");
+                    createConfetti();
+                } else if (randomAncestor.name === "Nona Gem") {
+                    playAudio("nona_gem");
+                    createConfetti();
+                } else if (randomAncestor.name === "Raden Watkins") {
+                    createConfetti();
+                }
+            }, 5000); // 5 detik
+        }
+    </script>
+</body>
+</html>
